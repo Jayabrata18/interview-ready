@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { date, z } from "zod";
-import { verify } from "jsonwebtoken";
 
 export const interviewRouter = express.Router();
 const prisma = new PrismaClient();
