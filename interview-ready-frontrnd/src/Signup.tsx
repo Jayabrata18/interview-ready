@@ -1,25 +1,32 @@
 import React, { useState } from "react";
 import useLocalStorage from "use-local-storage";
-
-import './Signup.css'; 
+import "./Signup.css";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Signup = () => {
-const [theme, setTheme] = useLocalStorage("theme", "dark");
-const [isChecked, setIsChecked] = useState(false);
-
-const handleCheckboxChange = (event: any) => {
-  setIsChecked(event.target.checked);
-};
-const switchTheme = () => {
+  const navigate = useNavigate();
+  const [theme, setTheme] = useLocalStorage("theme", "dark");
+  const [isChecked, setIsChecked] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+   axios.defaults.withCredentials = true;
+  const handleCheckboxChange = (event: any) => {
+    setIsChecked(event.target.checked);
+  };
+  const switchTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
-};
+  };
   return (
     <div className="app" data-theme={theme}>
       <div className="signup">
         <h1>Signup</h1>
         <div className="container">
-          <div className="top">
+          {/* <div className="top">
             <i className="fab fa-google" aria-hidden="true"></i>
             <i className="fab fa-facebook-square"></i>
             <i className="fab fa-linkedin"></i>
@@ -28,13 +35,14 @@ const switchTheme = () => {
           </div>
           <p className="divider">
             <span>Or</span>
-          </p>
-          <form>
+          </p> */}
+          <form >
             <label>Name</label>
             <input
               type="text"
               pattern="[a-zA-Z]+"
               placeholder="Enter your name"
+              value={formData.name}
             />
             <label>E-mail</label>
             <input type="email" placeholder="Enter your email" />

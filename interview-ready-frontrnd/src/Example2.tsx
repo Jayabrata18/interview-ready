@@ -4,33 +4,36 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef } from "ag-grid-community";
 import axios from "axios";
+import "./Button.css";
 
-const Example2 = () => {
-//   function actionCellRenderer(params: any) {
-//     let eGui = document.createElement("div");
 
-//     let editingCells = params.api.getEditingCells();
-//     // checks if the rowIndex matches in at least one of the editing cells
-//     let isCurrentRowEditing = editingCells.some((cell: any) => {
-//       return cell.rowIndex === params.node.rowIndex;
-//     });
+const Dashboard = () => {
 
-//     if (isCurrentRowEditing) {
-//       eGui.innerHTML = `
-// <button class="action-button delete" data-action="delete" > delete </button>
-// `;
-//     } else {
-//       eGui.innerHTML = `
-// <button class="action-button delete" data-action="delete" > delete </button>
-// `;
-//     }
+  const button = (params: any) => {
 
-//     return eGui;
-//   }
+    const deleteEntry = async () => {
+      const deleteData = params.node.data;
+      params.api.applyTransaction({ remove: [deleteData] });
+      try {
+        const response = await axios.delete(
+          "http://localhost:3000/api/v1/interview/delete/" + deleteData.id,
+          deleteData
+        );
+        console.log("Interview Deleted successfully:", response.data);
+      } catch (error) {
+        console.error("Error adding Deleting Interview:", error);
+      }
+    };
+    return (
+      <button className="btn" onClick={deleteEntry}>
+        Delete
+      </button>
+    );
+  };
 
   const [rowData, setRowData] = useState<any[]>([]);
   const [columnDefs] = useState<ColDef[]>([
-    { field: "id", headerName: "ID" },
+    // { field: "id", headerName: "ID" },
     { field: "InterviewName", headerName: "Name", editable: true },
     {
       field: "InterviewSatuts",
@@ -49,7 +52,7 @@ const Example2 = () => {
     { field: "InterviewRating", headerName: "Rating", editable: true },
     {
       headerName: "Action",
-      // cellRenderer: actionCellRenderer,
+      cellRenderer: button,
       editable: false,
       colId: "action",
     },
@@ -92,10 +95,10 @@ const Example2 = () => {
 
   const handleSave = async () => {
     // Save new entry to backend and update rowData state
-    newEntry.InterviewRating = parseInt(newEntry.InterviewRating);
+    // newEntry.InterviewRating = parseInt(newEntry.InterviewRating);
 
-    console.log(newEntry);
-    rowData.push(newEntry);
+    // console.log(newEntry);
+    // rowData.push(newEntry);
 
     setRowData([...rowData]);
     const requestBody = { ...newEntry, userId: 2 };
@@ -105,18 +108,17 @@ const Example2 = () => {
         requestBody
       );
       console.log("New entry added successfully:", response.data);
-      
     } catch (error) {
       console.error("Error adding new entry:", error);
     }
     closeModal();
   };
   const handlechange = async (params: any) => {
-    console.log(params);
-    console.log(params.data);
+    // console.log(params);
+    // console.log(params.data);
     const { createdAt, updatedAt, ...value } = params.data;
     // const value = params.data;
-    console.log(`fgdtgh`, value);
+    // console.log(`fgdtgh`, value);
     try {
       const response = await axios.put(
         "http://localhost:3000/api/v1/interview/update/" + value.id,
@@ -141,7 +143,7 @@ const Example2 = () => {
   return (
     <div className="App">
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div className="ag-theme-quartz" style={{ height: 500, width: 1200 }}>
+        <div className="ag-theme-quartz" style={{ height: 500, width: 1000, marginTop: 65 }}>
           <AgGridReact
             onCellValueChanged={handlechange}
             rowData={rowData}
@@ -197,7 +199,6 @@ const Example2 = () => {
               placeholder="Rating"
               defaultValue={0}
             />
-
             <button onClick={handleSave}>Save</button>
           </div>
         </div>
@@ -206,4 +207,4 @@ const Example2 = () => {
   );
 };
 
-export default Example2;
+export default Dashboard;
