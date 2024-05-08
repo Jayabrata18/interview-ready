@@ -1,21 +1,42 @@
 import React, { useState } from "react";
 import useLocalStorage from "use-local-storage";
+import { useNavigate } from "react-router-dom";
 
 import "./Signin.css";
+import axios from "axios";
+interface SignInFormData {
+  email: string;
+  password: string;
+}
 
 const Signin = () => {
+  const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage("theme", "dark");
   const [isChecked, setIsChecked] = useState(false);
-  // const [formData, setFormData] = useState<any[]>([]);
-    const [formData, setFormData] = useState<{ email: string, password: string }>({ email: "", password: "" });
+  const [formData, setFormData] = useState<SignInFormData>({
+    email: "",
+    password: "",
+  });
 
-   const changeHandler = (event: any) => {
-     setFormData((prevFormData) => ({
-       ...prevFormData,
-       [event.target.name]: event.target.value,
-     }));
-     console.log(formData);
-   };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // console.log("Form submitted with data:", formData);
+    try {
+      await axios.post("http://localhost:3000/api/v1/user/signin", formData, {
+        // withCredentials: true,
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      console.log("error", error);
+    }
+
+  };
+
   const handleCheckboxChange = (event: any) => {
     setIsChecked(event.target.checked);
   };
@@ -28,7 +49,7 @@ const Signin = () => {
       <div className="signin">
         <h1>Signin</h1>
         <div className="container">
-          <div className="top">
+          {/* <div className="top">
             <i className="fab fa-google" aria-hidden="true"></i>
             <i className="fab fa-facebook-square"></i>
             <i className="fab fa-linkedin"></i>
@@ -37,21 +58,23 @@ const Signin = () => {
           </div>
           <p className="divider">
             <span>Or</span>
-          </p>
-          <form>
+          </p> */}
+          <form onSubmit={handleSubmit}>
             <label htmlFor="email">E-mail</label>
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
               value={formData.email}
-              // onChange={changeHandler}
+              onChange={handleChange}
             />
             <label>Password</label>
             <input
               type="password"
+              name="password"
               placeholder="Enter your password"
               value={formData.password}
-              // onChange={changeHandler}
+              onChange={handleChange}
             />
             <div className="remember">
               <input

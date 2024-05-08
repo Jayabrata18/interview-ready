@@ -1,11 +1,44 @@
 import express, { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { date, z } from "zod";
+import { verify } from "jsonwebtoken";
 
 export const interviewRouter = express.Router();
 const prisma = new PrismaClient();
 
-//create a new intervie
+//auth middleware
+interface DecodedToken {
+  userId: string;
+}
+
+const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers["authorization"] || "";
+  const token = authHeader.split(" ")[1];
+  console.log(token);
+  try {
+    if (!token) {
+      res.status(403).json({ message: "Unauthorized there", token });
+      return;
+    }
+
+    const decoded = verify(token, process.env.JWT_SECRET_KEY!) as DecodedToken;
+    if (!decoded) {
+      res.status(403).json({ message: "Unauthorized here" });
+      return;
+    }
+
+    // const user_id = { id: decoded.userId };
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//create a new interview schedule
 const interviewInput = z.object({
   InterviewName: z.string().min(2).max(50),
   InterviewSatuts: z.string().default("pending"),
@@ -14,32 +47,48 @@ const interviewInput = z.object({
   userId: z.number(),
 });
 
-interviewRouter.post("/create", async (req: Request, res: Response) => {
-  try {
-    const {
-      InterviewFeedBack,
-      InterviewSatuts,
-      InterviewRating,
-      InterviewName,
-      userId,
-    } = interviewInput.parse(req.body);
-    const interview = await prisma.interview.create({
-      data: {
+interviewRouter.post(
+  "/create",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const {
         InterviewFeedBack,
         InterviewSatuts,
         InterviewRating,
         InterviewName,
-        userId,
-      },
-    });
-    res
-      .status(200)
-      .json({ data: interview, message: "Interview Created Successfully" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Error creating interview");
+      } = interviewInput.parse(req.body);
+      const authHeader = req.headers["authorization"] || "";
+      const token = authHeader.split(" ")[1];
+      const decoded = verify(
+        token,
+        process.env.JWT_SECRET_KEY!
+      ) as DecodedToken;
+      if (!decoded) {
+        res.status(403).json({ message: "Unauthorized" });
+        return;
+      }
+
+      const userId = Number(decoded.userId);
+
+      const interview = await prisma.interview.create({
+        data: {
+          InterviewFeedBack,
+          InterviewSatuts,
+          InterviewRating,
+          InterviewName,
+          userId,
+        },
+      });
+      res
+        .status(200)
+        .json({ data: interview, message: "Interview Created Successfully" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Error creating interview");
+    }
   }
-});
+);
 
 //update interview
 
@@ -53,6 +102,7 @@ const updateInterviewInput = z.object({
 
 interviewRouter.put(
   "/update/:id",
+  authMiddleware,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
@@ -87,6 +137,7 @@ interviewRouter.put(
 
 interviewRouter.delete(
   "/delete/:id",
+  authMiddleware,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const interviewId = parseInt(req.params.id);
@@ -104,29 +155,36 @@ interviewRouter.delete(
   }
 );
 
-
-interviewRouter.get("/all", async (req: Request, res: Response) => {
-  try {
-    const interviews = await prisma.interview.findMany();
-    res.json(interviews);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Error fetching interviews");
+interviewRouter.get(
+  "/all",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const interviews = await prisma.interview.findMany();
+      res.json(interviews);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Error fetching interviews");
+    }
   }
-});
+);
 
 //get all interviews for a user
-interviewRouter.get("/all/:id", async (req: Request, res: Response) => {
-  try {
-    const userId = parseInt(req.params.id);
-    const interviews = await prisma.interview.findMany({
-      where: {
-        userId,
-      },
-    });
-    res.status(200).json(interviews);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Error fetching interviews");
+interviewRouter.get(
+  "/all/:id",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const interviews = await prisma.interview.findMany({
+        where: {
+          userId,
+        },
+      });
+      res.status(200).json(interviews);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Error fetching interviews");
+    }
   }
-});
+);
