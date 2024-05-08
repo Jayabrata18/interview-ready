@@ -19,10 +19,10 @@ const authMiddleware = async (
   const authHeader = req.headers["authorization"] || "";
   const token = authHeader && authHeader.split(" ")[1];
 
-  // console.log(token);
+  console.log(token);
   try {
     if (!token) {
-      res.status(403).json({ message: "Unauthorized there", token });
+      res.status(403).json({ message: "Unauthorized there" });
       return;
     }
 

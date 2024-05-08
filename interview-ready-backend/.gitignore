@@ -1,3 +1,4 @@
 node_modules
 # Keep environment variables out of version control
 .env
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcxNTE4MDA5OCwiZXhwIjoxNzE1MTgzNjk4fQ.IkMz38Q86nQdYIChdakSZ7Bi-EnnWQuKLKIdUPGVhOk
