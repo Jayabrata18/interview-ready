@@ -12,7 +12,6 @@ interface SignInFormData {
 const Signin = () => {
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage("theme", "dark");
-  const [token, setToken] = useLocalStorage("token", "");
   const [isChecked, setIsChecked] = useState(false);
   const [formData, setFormData] = useState<SignInFormData>({
     email: "",
@@ -33,9 +32,7 @@ const Signin = () => {
           // withCredentials: true,
         })
         .then((res) => {
-          setToken(res.data);
           localStorage.setItem("token", res.data);
-          // console.log(setToken);
         });
       navigate("/dashboard");
     } catch (error) {
