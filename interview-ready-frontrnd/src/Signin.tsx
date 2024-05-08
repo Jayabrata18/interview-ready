@@ -12,6 +12,7 @@ interface SignInFormData {
 const Signin = () => {
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage("theme", "dark");
+  const [token, setToken] = useLocalStorage("token", "");
   const [isChecked, setIsChecked] = useState(false);
   const [formData, setFormData] = useState<SignInFormData>({
     email: "",
@@ -23,18 +24,23 @@ const Signin = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log("Form submitted with data:", formData);
     try {
-      await axios.post("http://localhost:3000/api/v1/user/signin", formData, {
-        // withCredentials: true,
-      });
+      await axios
+        .post("http://localhost:3000/api/v1/user/signin", formData, {
+          // withCredentials: true,
+        })
+        .then((res) => {
+          setToken(res.data);
+          localStorage.setItem("token", res.data);
+          // console.log(setToken);
+        });
       navigate("/dashboard");
     } catch (error) {
       console.log("error", error);
     }
-
   };
 
   const handleCheckboxChange = (event: any) => {

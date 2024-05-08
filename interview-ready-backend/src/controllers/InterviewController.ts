@@ -17,20 +17,22 @@ const authMiddleware = async (
   next: NextFunction
 ) => {
   const authHeader = req.headers["authorization"] || "";
-  const token = authHeader && authHeader.split(" ")[1];
-
-  console.log(token);
+  const token = authHeader && authHeader.split(".")[1];
+  // console.log(authHeader);
+  // console.log(token);
   try {
     if (!token) {
       res.status(403).json({ message: "Unauthorized there" });
       return;
     }
-
-    const decoded = verify(token, process.env.JWT_SECRET_KEY!) as DecodedToken;
+    const decoded = verify(
+      authHeader,
+      process.env.JWT_SECRET_KEY!
+    ) as DecodedToken;
     if (!decoded) {
       res.status(403).json({ message: "Unauthorized here" });
       return;
-    } 
+    }
     next();
   } catch (error) {
     console.error(error);
@@ -43,7 +45,7 @@ const interviewInput = z.object({
   InterviewSatuts: z.string().default("pending"),
   InterviewFeedBack: z.string().min(2).max(500),
   InterviewRating: z.number().min(0).max(5),
-  userId: z.number(),
+  // userId: z.number(),
 });
 
 interviewRouter.post(
@@ -57,18 +59,13 @@ interviewRouter.post(
         InterviewRating,
         InterviewName,
       } = interviewInput.parse(req.body);
-  const authHeader = req.headers["authorization"] || "";
-  const token = authHeader && authHeader.split(" ")[1];
+      const authHeader = req.headers["authorization"] || "";
       const decoded = verify(
-        token,
+        authHeader,
         process.env.JWT_SECRET_KEY!
       ) as DecodedToken;
-      if (!decoded) {
-        res.status(403).json({ message: "Unauthorized" });
-        return;
-      }
-
       const userId = Number(decoded.userId);
+      // console.log(userId);
 
       const interview = await prisma.interview.create({
         data: {
@@ -109,9 +106,15 @@ interviewRouter.put(
         InterviewSatuts,
         InterviewRating,
         InterviewName,
-        userId,
+        // userId,
       } = updateInterviewInput.parse(req.body);
       const interviewId = parseInt(req.params.id);
+      const authHeader = req.headers["authorization"] || "";
+      const decoded = verify(
+        authHeader,
+        process.env.JWT_SECRET_KEY!
+      ) as DecodedToken;
+      const userId = Number(decoded.userId);
       const interview = await prisma.interview.update({
         where: {
           id: interviewId,
@@ -174,7 +177,13 @@ interviewRouter.get(
   authMiddleware,
   async (req: Request, res: Response) => {
     try {
-      const userId = parseInt(req.params.id);
+      const authHeader = req.headers["authorization"] || "";
+      const decoded = verify(
+        authHeader,
+        process.env.JWT_SECRET_KEY!
+      ) as DecodedToken;
+      const userId = Number(decoded.userId);
+
       const interviews = await prisma.interview.findMany({
         where: {
           userId,

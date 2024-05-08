@@ -6,6 +6,7 @@ import { ColDef } from "ag-grid-community";
 import axios from "axios";
 import "./Button.css";
 import "./Dashboard.css";
+import useLocalStorage from "use-local-storage";
 
 const Dashboard = () => {
   const button = (params: any) => {
@@ -67,11 +68,20 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  const token = localStorage.getItem("token")? localStorage.getItem("token") : "";
+  // console.log(token);
+  const retriveUserId = token ? JSON.parse(atob(token.split(".")[1])).userId : null;
+  // console.log(retriveUserId);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/v1/interview/all/"
+        "http://localhost:3000/api/v1/interview/all/" + retriveUserId,
+        {
+          headers: {
+            authorization: token,
+          },
+        }
       );
       setRowData(response.data);
     } catch (error) {
