@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Signup from "./Signup";
 import Signin from "./Signin";
 import NotFound from "./NotFound";
-import Dashboard from "./Example2";
+import Dashboard from "./Dashboard";
 const App = () => {
   return (
     <Router>

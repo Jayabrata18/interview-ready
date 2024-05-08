@@ -6,7 +6,16 @@ import "./Signin.css";
 const Signin = () => {
   const [theme, setTheme] = useLocalStorage("theme", "dark");
   const [isChecked, setIsChecked] = useState(false);
+  // const [formData, setFormData] = useState<any[]>([]);
+    const [formData, setFormData] = useState<{ email: string, password: string }>({ email: "", password: "" });
 
+   const changeHandler = (event: any) => {
+     setFormData((prevFormData) => ({
+       ...prevFormData,
+       [event.target.name]: event.target.value,
+     }));
+     console.log(formData);
+   };
   const handleCheckboxChange = (event: any) => {
     setIsChecked(event.target.checked);
   };
@@ -30,16 +39,20 @@ const Signin = () => {
             <span>Or</span>
           </p>
           <form>
-            {/* <label>Name</label>
+            <label htmlFor="email">E-mail</label>
             <input
-              type="text"
-              pattern="[a-zA-Z]+"
-              placeholder="Enter your name"
-            /> */}
-            <label>E-mail</label>
-            <input type="email" placeholder="Enter your email" />
+              type="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              // onChange={changeHandler}
+            />
             <label>Password</label>
-            <input type="password" placeholder="Enter your password" />
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              // onChange={changeHandler}
+            />
             <div className="remember">
               <input
                 id="checkbox"
@@ -57,7 +70,9 @@ const Signin = () => {
             <p>Forgot your password?</p>
             <a href="/">Reset Password</a>
           </div>
-          <a  href="/signup" className="create">Dont Have Account Signup Here!</a>
+          <a href="/signup" className="create">
+            Dont Have Account Signup Here!
+          </a>
         </div>
         <div className="theme-toggle">
           {theme === "light" ? <h2>Light Theme</h2> : <h2>Dark Theme</h2>}

@@ -5,12 +5,10 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef } from "ag-grid-community";
 import axios from "axios";
 import "./Button.css";
-
+import "./Dashboard.css";
 
 const Dashboard = () => {
-
   const button = (params: any) => {
-
     const deleteEntry = async () => {
       const deleteData = params.node.data;
       params.api.applyTransaction({ remove: [deleteData] });
@@ -96,10 +94,8 @@ const Dashboard = () => {
   const handleSave = async () => {
     // Save new entry to backend and update rowData state
     // newEntry.InterviewRating = parseInt(newEntry.InterviewRating);
-
     // console.log(newEntry);
-    // rowData.push(newEntry);
-
+    rowData.push(newEntry);
     setRowData([...rowData]);
     const requestBody = { ...newEntry, userId: 2 };
     try {
@@ -143,7 +139,10 @@ const Dashboard = () => {
   return (
     <div className="App">
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div className="ag-theme-quartz" style={{ height: 500, width: 1000, marginTop: 65 }}>
+        <div
+          className="ag-theme-quartz"
+          style={{ height: 500, width: 1000, marginTop: 65 }}
+        >
           <AgGridReact
             onCellValueChanged={handlechange}
             rowData={rowData}

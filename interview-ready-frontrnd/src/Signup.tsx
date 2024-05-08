@@ -4,19 +4,32 @@ import "./Signup.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Signup = () => {
+interface SignUpFormData {
+  name: string;
+  email: string;
+  password: string;
+}
+const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [theme, setTheme] = useLocalStorage("theme", "dark");
   const [isChecked, setIsChecked] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-   axios.defaults.withCredentials = true;
-  const handleCheckboxChange = (event: any) => {
-    setIsChecked(event.target.checked);
-  };
+ const [formData, setFormData] = useState<SignUpFormData>({
+   name: "",
+   email: "",
+   password: "",
+ });
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     const { name, value } = e.target;
+     setFormData({ ...formData, [name]: value });
+   };
+   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+     e.preventDefault();
+     console.log("Form submitted with data:", formData);
+   };
+  // axios.defaults.withCredentials = true;
+  // const handleCheckboxChange = (event: any) => {
+  //   setIsChecked(event.target.checked);
+  // };
   const switchTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
@@ -36,29 +49,40 @@ const Signup = () => {
           <p className="divider">
             <span>Or</span>
           </p> */}
-          <form >
+          <form onSubmit={handleSubmit}>
             <label>Name</label>
             <input
               type="text"
               pattern="[a-zA-Z]+"
               placeholder="Enter your name"
               value={formData.name}
+              onChange={handleChange}
             />
             <label>E-mail</label>
-            <input type="email" placeholder="Enter your email" />
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+            />
             <label>Password</label>
-            <input type="password" placeholder="Enter your password" />
-            <div className="remember">
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            {/* <div className="remember">
               <input
                 id="checkbox"
                 type="checkbox"
                 checked={isChecked}
-                onChange={handleCheckboxChange}
+                // onChange={handleCheckboxChange}
               />
               <label htmlFor="checkbox">
                 <p>Remember Me</p>
               </label>
-            </div>
+            </div> */}
             <button>Sign Up</button>
           </form>
           <div className="bottom">
