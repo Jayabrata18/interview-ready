@@ -55,7 +55,9 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
       return res.status(400).send("Invalid password");
     }
     //generate jwt token
-    const token = sign({ userId: user.id }, process.env.JWT_SECRET_KEY!);
+    const options = { expiresIn: "1h" };
+    const secret = process.env.JWT_SECRET_KEY!;
+    const token = sign({ userId: user.id }, secret, options);
     res.status(200).send(token);
   } catch (error) {
     console.log(error);
