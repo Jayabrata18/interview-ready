@@ -15,7 +15,9 @@ body {
 
 .content {
     width: 100%;
-    height: 70%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,6 +26,7 @@ body {
 .content .text {
     position: relative;
     color: #fff;
+    margin-top: 120px;
     font-weight: 700;
     font-size: 45px;
     transform: scale(2);
@@ -35,7 +38,7 @@ body {
 .content .subtitle {
     position: absolute;
     display: block;
-    margin-top: 50px;
+    margin-top: 240px;
     color: #fff;
     font-weight: 500;
     font-size: 11px;
@@ -49,7 +52,7 @@ body {
     position: absolute;
     display: block;
     width: 40%;
-    margin-top: 120px;
+    margin-top: 360px;
     color: #fff;
     text-align: center;
     font-weight: 400;
@@ -63,7 +66,7 @@ body {
     color: #e5e5e5;
     position: absolute;
     display: block;
-    margin-top: 180px;
+    margin-top: 500px;
     padding: 8px 25px;
     text-align: center;
     text-decoration: none;
