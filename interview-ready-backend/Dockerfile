@@ -1,14 +1,14 @@
-FROM node:14
+FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY . .
 
 RUN npm install 
+RUN npx prisma generate
 RUN npm run build
 
-COPY . .
 
 EXPOSE 5000
 
-CMD ["node", "./dist/app.js"]
+CMD ["node", "dist/app.js"]

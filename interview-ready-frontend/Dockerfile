@@ -1,30 +1,32 @@
-
-FROM node:14 AS builder
+FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-
-# Install dependencies
-RUN yarn add
-
-COPY . ./
+COPY . .
 
 # Build the app
+RUN yarn install
+
+# EXPOSE 3000
+
+# if dev mode then
+# CMD ["yarn", "run","start"]
+
 RUN yarn build
 
-# Stage 2: Serve the app with NGINX
+# # Stage 2: Serve the app with NGINX
 FROM nginx:alpine
 
-# Remove default NGINX static files
-RUN rm -rf /usr/share/nginx/html/*
+# set working directory of nginx asset
+WORKDIR /usr/share/nginx/html/*
 
-# Copy built app from previous stage to NGINX directory
-COPY --from=builder /app/dist /usr/share/nginx/html
-# custom build
-# COPY --from=builder /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-# Expose port 80
+ # Remove default NGINX static files
+RUN rm -rf ./*
+
+# Copy static files from the build stage
+# COPY --from=build-stage /app/dist .
+# # Expose port 80
 EXPOSE 80
 
-# Start NGINX server
+# # Start NGINX server
 CMD ["nginx", "-g", "daemon off;"]
