@@ -1,7 +1,7 @@
 env:
   CI: false
 
-name: Node.js CI
+name: Node.js Backend CI
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
 
   docker:
 
-    needs: build
+    # needs: build
     name: Docker Build and Push
     runs-on: ubuntu-latest
 
