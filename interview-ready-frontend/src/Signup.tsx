@@ -26,7 +26,7 @@ const Signup: React.FC = () => {
     e.preventDefault();
     // console.log(formData);
     try {
-      await axios.post("http://localhost:3000/api/v1/user/signup", formData, {
+      await axios.post("http://localhost/api/v1/user/signup", formData, {
         // withCredentials: true,
       });
       navigate("/signin");

@@ -3,15 +3,30 @@ services:
   interview-ready-backend:
     image: jayabrata180/interview-ready-backend:latest
     container_name: "interview-ready-backend"
-
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/postgres
+      - JWT_SECRET_KEY=asdfgh
+    depends_on:
+      - db
   interview-ready-frontend:
     image: jayabrata180/interview-ready-frontend:latest
     container_name: "interview-ready-frontend"
     depends_on:
       - interview-ready-backend
   proxy:
-    image: jayabrata180/interview-ready-proxy:latest
-    container_name: "interview-ready-proxy"
+    image: jayabrata180/interview-ready-nginx:latest
+    container_name: "interview-ready-nginx"
     restart: always
     ports:
       - "80:80"
+  db:
+    image: postgres:latest
+    container_name: "postgres_db"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:

@@ -1,32 +1,16 @@
-FROM node:16-alpine as builder
-
+# build environment
+FROM node:alpine as build
 WORKDIR /app
-
-COPY . .
-
-# Build the app
+ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json /app/package.json
 RUN yarn install
+COPY . /app
+RUN yarn run build
 
-# EXPOSE 3000
-
-# if dev mode then
-# CMD ["yarn", "run","start"]
-
-RUN yarn build
-
-# # Stage 2: Serve the app with NGINX
+# production environment
 FROM nginx:alpine
-
-# set working directory of nginx asset
-WORKDIR /usr/share/nginx/html/*
-
- # Remove default NGINX static files
-RUN rm -rf ./*
-
-# Copy static files from the build stage
-# COPY --from=build-stage /app/dist .
-# # Expose port 80
-EXPOSE 80
-
-# # Start NGINX server
+COPY --from=build /app/dist /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/conf.d
+EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]

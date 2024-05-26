@@ -14,7 +14,7 @@ const Dashboard = () => {
       params.api.applyTransaction({ remove: [deleteData] });
       try {
         const response = await axios.delete(
-          "http://localhost:3000/api/v1/interview/delete/" + deleteData.id,
+          "http://localhost/api/v1/interview/delete/" + deleteData.id,
           deleteData
         );
         console.log("Interview Deleted successfully:", response.data);
@@ -75,7 +75,7 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/v1/interview/all/" + retriveUserId,
+        "http://localhost/api/v1/interview/all/" + retriveUserId,
         {
           headers: {
             authorization: token,
@@ -109,7 +109,7 @@ const Dashboard = () => {
     const requestBody = { ...newEntry, userId: 2 };
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/interview/create",
+        "http://localhost/api/v1/interview/create",
         requestBody
       );
       console.log("New entry added successfully:", response.data);
@@ -126,7 +126,7 @@ const Dashboard = () => {
     // console.log(`fgdtgh`, value);
     try {
       const response = await axios.put(
-        "http://localhost:3000/api/v1/interview/update/" + value.id,
+        "http://localhost/api/v1/interview/update/" + value.id,
         value
       );
       console.log("New entry added successfully:", response.data);
