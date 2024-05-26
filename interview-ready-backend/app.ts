@@ -17,7 +17,7 @@ app.use(
     credentials: false,
   })
 );
-app.get("/status", async (req: Request, res: Response) => {
+app.get("/api/v1/status", async (req: Request, res: Response) => {
   try {
     await prisma.$connect();
     res.json({ status: "Database connected" });

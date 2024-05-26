@@ -4,7 +4,7 @@ services:
     image: jayabrata180/interview-ready-backend:latest
     container_name: "interview-ready-backend"
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/postgres
+      - DATABASE_URL=postgresql://postgres:password@db:5432/postgres
       - JWT_SECRET_KEY=asdfgh
     depends_on:
       - db
