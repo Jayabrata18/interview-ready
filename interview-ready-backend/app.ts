@@ -5,6 +5,7 @@ import cors from "cors";
 import "dotenv/config";
 import { interviewRouter } from "./src/controllers/InterviewController";
 import { userRouter } from "./src/controllers/userController";
+import { url } from "inspector";
 const prisma = new PrismaClient();
 const app = express();
 

@@ -9,3 +9,6 @@ run docker image with this command
 docker run -d -p 5000:5000 jayabrata180/interview-ready-backend
 
 // -e dea env file
+
+
+password : ~}8{[#_nKqg?<KU2
